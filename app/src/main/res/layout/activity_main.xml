@@ -1,0 +1,213 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:divider="@drawable/linear_layout_divider"
+    android:showDividers=""
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/back2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageButton
+        android:id="@+id/city_button"
+        android:src="@drawable/menu"
+        android:scaleType="fitCenter"
+        android:layout_gravity="right"
+        android:background="@color/transparent"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:divider="@drawable/linear_layout_divider"
+        android:showDividers="middle"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/lowest_text"
+                android:textColor="@color/black"
+                android:text="@string/lowest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/now_text"
+                android:textColor="@color/black"
+                android:text="15"
+                android:layout_weight="1"
+                android:textSize="40sp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/highest_text"
+                android:textColor="@color/black"
+                android:text="@string/highest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/info_left_text"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/info_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/now_img"
+                android:layout_weight="1"
+                android:src="@drawable/sun"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/info_right"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/info_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/linear_layout_divider"
+        android:showDividers="middle"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            >
+            <ImageView
+                android:id="@+id/first_img"
+                android:src="@drawable/sun"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/first_weather"
+                android:textColor="@color/black"
+                android:text="@string/wendu"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/first_date"
+                android:textColor="@color/black"
+                android:text="@string/xing"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            >
+            <ImageView
+                android:id="@+id/second_img"
+                android:src="@drawable/sun"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/second_weather"
+                android:textColor="@color/black"
+                android:text="@string/wendu"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/second_date"
+                android:textColor="@color/black"
+                android:text="@string/xing"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            >
+            <ImageView
+                android:id="@+id/third_img"
+                android:src="@drawable/sun"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/third_weather"
+                android:textColor="@color/black"
+                android:text="@string/wendu"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/third_date"
+                android:textColor="@color/black"
+                android:text="@string/xing"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            >
+            <ImageView
+                android:id="@+id/fourth_img"
+                android:src="@drawable/sun"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/fourth_weather"
+                android:textColor="@color/black"
+                android:text="@string/wendu"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/fourth_date"
+                android:textColor="@color/black"
+                android:text="@string/xing"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+        </LinearLayout>
