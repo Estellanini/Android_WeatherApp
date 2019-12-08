@@ -1,8 +1,10 @@
 package cn.edu.estella.jennyweather;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,6 +45,18 @@ public class SearchActivity extends Activity {
                 listView.setAdapter(new SimpleAdapter(getApplication(), listems,
                         R.layout.activity_search_listview_item, new String[]{"name"},
                         new int[]{R.id.result_text}));
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = getIntent();
+                Bundle bundle = intent.getExtras();
+                bundle.putString("city", listems.get(position).get("name").toString());
+                intent.putExtras(bundle);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         });
     }
