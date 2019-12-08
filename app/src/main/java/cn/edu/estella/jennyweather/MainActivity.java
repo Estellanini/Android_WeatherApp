@@ -1,7 +1,10 @@
 package cn.edu.estella.jennyweather;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -77,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
 
         Getweather getweather = new Getweather();
         getweather.execute(url, defaultName);
+
+
+        IntentFilter inf = new IntentFilter();
+        inf.addAction("com.weather.refresh");
+        registerReceiver(broadcastReceiver, inf);
+
+        startService(new Intent(this, RefreshService.class));
+
+
     }
 
     @Override
@@ -152,5 +164,29 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals("com.weather.refresh")){
+                Toast.makeText(getApplication(),"refresh",Toast.LENGTH_LONG).show();
+                Getweather getweather = new Getweather();
+                getweather.execute(url, defaultName);
+            }
+        }
+
+
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, RefreshService.class));
+        unregisterReceiver(broadcastReceiver);
+
     }
 }
