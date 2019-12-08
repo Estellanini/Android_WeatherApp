@@ -3,11 +3,17 @@ package cn.edu.estella.jennyweather;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,20 +24,25 @@ import java.util.Map;
 public class CityActivity extends Activity {
     private ListView listView;
     private Button addButton;
-    private String[] cities = {"北京 朝阳","江苏 宿迁","江苏 南京","江苏 徐州","辽宁 朝阳"};
+    private String[] cities = {"北京 朝阳", "江苏 宿迁", "江苏 南京", "江苏 徐州", "辽宁 朝阳"};
     private List<Map<String, Object>> listems = new ArrayList<Map<String, Object>>();
+
+
+    private MyAdapter myAdapter;
+    private String[] areaIds = {"1","1","1","1","1"};
+    private Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_layout);
 
-        for(int i=0;i<cities.length;i++){
+        for (int i = 0; i < cities.length; i++) {
             Map<String, Object> listem = new HashMap<String, Object>();
             listem.put("name", cities[i]);
             listems.add(listem);
         }
-        listView = (ListView)findViewById(R.id.city_listview);
+        listView = (ListView) findViewById(R.id.city_listview);
         listView.setAdapter(new SimpleAdapter(getApplication(), listems,
                 R.layout.activity_search_listview_item, new String[]{"name"},
                 new int[]{R.id.result_text}));
@@ -48,7 +59,7 @@ public class CityActivity extends Activity {
             }
         });
 
-        addButton = (Button)findViewById(R.id.add_city_button);
+        addButton = (Button) findViewById(R.id.add_city_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +73,18 @@ public class CityActivity extends Activity {
         });
 
 
+        deleteButton = (Button)findViewById(R.id.delete_city_button);
+        myAdapter = new MyAdapter(cities, areaIds, deleteButton);
+        listView.setAdapter(myAdapter);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplication(), myAdapter.getCheckedCities().length+"", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
     }
 
     @Override
@@ -70,6 +93,95 @@ public class CityActivity extends Activity {
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             Toast.makeText(this, bundle.getString("city"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //内部类
+    private class MyAdapter extends BaseAdapter {
+
+        //定义该类的内部属性和构造器
+        private class ViewSet {
+            TextView textView;
+            CheckBox checkBox;
+        }
+
+        private String[] cities;
+        private int checkedNum = 0;
+        private Button button;
+        private boolean[] checkedArray;
+        private String[] cityIds;
+
+        public MyAdapter(String[] cities, String[] cityIds, Button button) {
+            this.cities = cities;
+            this.button = button;
+            this.cityIds = cityIds;
+            this.checkedArray = new boolean[cities.length];
+            for (int i = 0; i < cities.length; i++) {
+                this.checkedArray[i] = false;
+            }
+        }
+
+
+        @Override
+        public int getCount() {
+            return cities.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewSet viewSet = null;
+            if (convertView == null) {
+                viewSet = new ViewSet();
+                convertView = LayoutInflater.from(getApplication()).inflate(R.layout.activity_city_listview_item, null);
+                viewSet.textView = (TextView) convertView.findViewById(R.id.listview_item_textview);
+                viewSet.checkBox = (CheckBox) convertView.findViewById(R.id.listview_item_checkbox);
+                convertView.setTag(viewSet);
+            } else {
+                viewSet = (ViewSet) convertView.getTag();
+            }
+            viewSet.textView.setText(cities[position]);
+            viewSet.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        checkedArray[position] = true;
+                        checkedNum++;
+                        if (checkedNum == 1) {
+                            button.setEnabled(true);
+                        }
+                    } else {
+                        checkedArray[position] = false;
+                        checkedNum--;
+                        if (checkedNum == 0) {
+                            button.setEnabled(false);
+                        }
+                    }
+                }
+            });
+            return convertView;
+        }
+
+
+        //返回选择的城市代码
+        public String[] getCheckedCities(){
+            List<String> checkedCityIdList = new ArrayList<String>();
+            for(int i=0;i<checkedArray.length;i++){
+                if(checkedArray[i] == true){
+                    checkedCityIdList.add(cityIds[i]);
+                }
+            }
+            String[] checkedCityIdArray = new String[checkedCityIdList.size()];
+            return checkedCityIdList.toArray(checkedCityIdArray);
         }
     }
 }
