@@ -96,7 +96,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
-            Toast.makeText(this, bundle.getString("city"), Toast.LENGTH_LONG).show();
+            String cityname = bundle.getString("cityname");
+            String[] params = cityname.split(" ");
+            defaultName = params[params.length - 1];
         }
     }
 
@@ -171,14 +173,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action.equals("com.weather.refresh")){
-                Toast.makeText(getApplication(),"refresh",Toast.LENGTH_LONG).show();
+            if (action.equals("com.weather.refresh")) {
+                //  Toast.makeText(getApplication(), "refresh", Toast.LENGTH_LONG).show();
                 Getweather getweather = new Getweather();
                 getweather.execute(url, defaultName);
             }
         }
-
-
     };
 
 

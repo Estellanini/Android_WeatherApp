@@ -32,6 +32,10 @@ public class CityActivity extends Activity {
     private String[] areaIds = {"1","1","1","1","1"};
     private Button deleteButton;
 
+
+    private DBHelper dbHelper;
+    private String[] name, ids;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +56,7 @@ public class CityActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = getIntent();
                 Bundle bundle = intent.getExtras();
-                bundle.putString("city", cities[position]);
+                bundle.putString("cityname", name[position]);
                 intent.putExtras(bundle);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
@@ -80,9 +84,19 @@ public class CityActivity extends Activity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplication(), myAdapter.getCheckedCities().length+"", Toast.LENGTH_LONG).show();
+                String[] result = myAdapter.getCheckedCities();
+                for(int i=0; i<result.length; i++){
+                    dbHelper.deleteDataById(Integer.parseInt(result[i]));
+                }
+                changeAdapter(dbHelper.queryAllCities());
             }
         });
+
+
+        dbHelper = DBHelper.getInstance(this);
+        changeAdapter(dbHelper.queryAllCities());
+
+
 
 
     }
@@ -92,8 +106,22 @@ public class CityActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
-            Toast.makeText(this, bundle.getString("city"), Toast.LENGTH_LONG).show();
+            dbHelper.insertData(new String[]{"cityname"},
+                    new String[]{bundle.getString("city")});
+            changeAdapter(dbHelper.queryAllCities());
         }
+    }
+
+
+    private void changeAdapter(List<Map<String, Object>> list){
+        ids = new String[list.size()];
+        name = new String[list.size()];
+        for(int i=0;i<list.size();i++){
+            ids[i] = list.get(i).get("id").toString();
+            name[i] = list.get(i).get("cityname").toString();
+        }
+        myAdapter = new MyAdapter(name, ids, deleteButton);
+        listView.setAdapter(myAdapter);
     }
 
     //内部类
