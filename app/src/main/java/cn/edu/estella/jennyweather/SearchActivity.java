@@ -30,9 +30,14 @@ public class SearchActivity extends Activity {
     private Button button;
     private EditText editText;
     private String[] cities = {"北京 朝阳","江苏 宿迁","江苏 南京","江苏 徐州","辽宁 朝阳"};
+
+
+    //这次我们使用“根据城市名查询可用城市”的方法查询城市，添加如下：
     private List<Map<String, String>> listems = new ArrayList<Map<String, String>>();
     private String url = "http://api.jisuapi.com/weather/city?appkey=fd2507b34c72c646";
 
+
+    //重写onCreate方法，具体操作为添加button.setOnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,9 @@ public class SearchActivity extends Activity {
         button = (Button)findViewById(R.id.search_button);
         editText = (EditText)findViewById(R.id.search_text);
 
+
+        //重写onCreate()方法，在监听事件中获取文本框里的内容，并执行城市查询。
+        // 首先，搜索按钮的点击事件需要改变一下，由它来触发网络请求：
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,6 +58,12 @@ public class SearchActivity extends Activity {
             }
         });
 
+
+
+        /*
+        *
+        * 为listview添加点击事件，将用户点击的城市名称传递回去：
+        * */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -63,7 +77,7 @@ public class SearchActivity extends Activity {
         });
     }
 
-
+    //城市查询功能代码
     public List<Map<String, String>> parseCities(String json, String input_text) {
         Map<String, String> map;
         try {
@@ -123,12 +137,9 @@ public class SearchActivity extends Activity {
 
 
 
+    //也实现内部类，实现对API中城市信息查询的相关操作：
     private class Getcity extends AsyncTask<String, String, String> {
         private String input_text = "";
-
-
-
-
 
 
 

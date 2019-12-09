@@ -27,7 +27,8 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
     private ImageButton imageButton;
-
+    //声明控件，设置访问地址。
+    //百度天气API，根据城市代号查询历史及未来天气的地址
     private String url = "http://api.jisuapi.com/weather/query?appkey=fd2507b34c72c646&city=";
     //需要更新内容的控件
     private TextView lowText, nowText, highText;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //再在onCreate()中初始化控件：
         //当天
         lowText = (TextView)findViewById(R.id.lowest_text);
         nowText = (TextView)findViewById(R.id.now_text);
@@ -67,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        /*这里为按钮添加点击事件：跳转到CityActivity中去。
+          从这个activity要前往另一个Activity就需要用到Intent。
+          这里所用的Intent的构造函数有两个参数，分别代表始发地和目的地。
+          Bundle主要用于传递数据；它保存的数据，是以key-value(键值对)的形式存在的，
+          可以在这里用Bundle.putString("Data", "data from TestBundle")这样的方法传递数据。
+          而intent.putExtras(bundle)把整个Bundle传递过去。
+          Intent的发送可以用startActivity(intent)，
+          本例中因为CityActivity需要回传数据给MainActivity，所以我们使用startActivityForResult(intent, 1)，
+          这里第二个参数1代表请求码，数值可以自己设定。
+        */
         imageButton = (ImageButton)findViewById(R.id.city_button);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,9 +90,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        //onCreate()中开启网络访问活动：
+
         Getweather getweather = new Getweather();
         getweather.execute(url, defaultName);
 
+
+        //注册该广播接收器，并且开启服务：
 
         IntentFilter inf = new IntentFilter();
         inf.addAction("com.weather.refresh");
@@ -91,6 +108,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*onActivityResult方法
+    * 该方法会在CityActivity回退的时候被调用。这里我们判断请求码是否是1，
+    * 结果码是否是Activity.RESULT_OK（值为-1），
+    * 条件满足则捕获CityActivity传来的数据，然后用Toast打印输出。
+    * */
+
+    //数据库部分修改这段代码了
+    //这里修改请求的城市代码。
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -104,8 +129,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     //访问网络的内部类
+    /*
+    * AsyncTask,是android提供的轻量级的异步类,可以直接继承AsyncTask,在类中实现异步操作,
+    * 并提供接口反馈当前异步执行的程度(可以通过接口实现UI进度更新),最后反馈执行的结果给UI主线程。
+    * AsyncTask定义了三种泛型类型 Params，Progress和Result。
+    * Params 启动任务执行的输入参数，比如HTTP请求的URL。（本例中类型为String）
+    * Progress 后台任务执行的百分比。（void）
+    * Result 后台执行任务最终返回的结果，比如String。（本例为String）
+    * 然后要实现它的两个方法：
+    * doInBackground()，该方法内实现需要后台完成的工作，一般比较耗时，本例中是访问网络；
+    * onPostExecute()，该方法在后台工作完成后调用，并把doInBackground()返回的结果作为输入参数，这里可以进行UI更新等操作。
+    * */
     private class Getweather extends AsyncTask<String, String, String> {
 
+
+        /*
+        * 我们先实现doInBackground()：
+        * 这里将传入的参数params[0], params[1]传入openConnection中，作为地址和城市Id，
+        * 访问天气API的根据城市代码查询天气的方法，最后返回得到的字符串。
+        * */
         private String openConnection(String address, String cityId){
             String result = "";
             try{
@@ -131,6 +173,15 @@ public class MainActivity extends AppCompatActivity {
             return openConnection(params[0], params[1]);
         }
 
+
+        /*
+        * 接下来实现onPostExecute()来更新UI：
+        * 这里上一个函数的返回值作为参数result传入，将它转化为JSONObject，
+        * 根据API提供的它的结构，天气有关的数据存储在了名为“result”的JSONObject中，
+        * 它包含：名为“today”的JSONObject，它存储着今天的天气情况，名为“forecast”的JSONObject，
+        * 它存储着未来四天天气。
+        *
+        * */
         @Override
         protected void onPostExecute(String result){
             try{
@@ -169,6 +220,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //定义广播接收器：
+    //这里我们判断接收到的intent是否是我们想要的，通过判断action是否是“com.weather.refresh”。
+    // 如果是，打印输出“refresh”，并且再次请求天气情况。
+
+    //数据库部分修改这段代码了
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -182,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    //实现onDestroy()方法，在Activity结束时结束广播接收器服务，并注销接受者：
+    //实际上，服务的生命周期可以独立于Activity，
+    // 如果不实现该方法，Activity结束后，在任务管理器中还可以看到该服务还在后台运行。
     @Override
     protected void onDestroy() {
         super.onDestroy();

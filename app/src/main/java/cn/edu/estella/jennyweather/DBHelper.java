@@ -58,6 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
         for(int i = 0; i<keys.length; i++){
             contentValues.put(keys[i], values[i]);
         }
+        //这里的数据库实例是通过getWritableDatabase()方式得到，即一个可写的数据库。
         database = getWritableDatabase();
         database.insert(TableName, null, contentValues);
     }
@@ -67,6 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] args = {String.valueOf(id)};
         //这里需要可写的数据库
         database = getWritableDatabase();
+        //第一个参数是要操作的表名，第二个参数为筛选条件，第三个参数是来替换参数二中的?的。
         database.delete(TableName, "id=?", args);
     }
 
@@ -74,7 +76,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Map<String, Object>> queryAllCities(){
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         //这里需要可读的数据库
+        //这里通过getReadableDatabase()得到可读的数据库实例。
         database = getReadableDatabase();
+        //和Java查询MySql数据库一样，使用游标Cursor来逐条读取记录。
         Cursor cursor = database.query(TableName, null, null, null, null, null, null, null);
         while(cursor.moveToNext()){
             Map<String, Object> map = new HashMap<String, Object>();
